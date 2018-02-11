@@ -1,2 +1,2 @@
-su -
+su - <br>
 make
