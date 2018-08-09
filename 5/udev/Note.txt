@@ -1,0 +1,6 @@
+cat /sys/class/devone/devone0/uevent
+MAJOR=246
+MINOR=0
+DEVNAME=devone0
+
+The DEVNAME is same as /dev/devone0.

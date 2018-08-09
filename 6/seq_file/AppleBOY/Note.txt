@@ -1,0 +1,7 @@
+Line #1: This is Brook's demo
+Line #2: This is Brook's demo
+Line #3: This is Brook's demo
+...
+Line #997: This is Brook's demo
+Line #998: This is Brook's demo
+Line #999: This is Brook's demo
