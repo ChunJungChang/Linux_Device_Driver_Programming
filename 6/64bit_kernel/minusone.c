@@ -15,7 +15,7 @@ int main(void)
      * use for 64bit_kernel or
      * crash because p[index-1] == p[0x00000000ffffffff] != p[-1]
      */
-	/* unsigned long index = 0; */
+	//unsigned long index = 0;
 
 	printf("index-1 = %lx (sizeof %d)\n", index-1, sizeof(index-1));
 

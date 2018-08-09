@@ -1,6 +1,6 @@
 #http://www.cs.bham.ac.uk/~exr/lectures/opsys/14_15/examples/modules/
 
-CFAGS += -Wall
+EXTRA_CFLAGS += -Wall
 CFILES = kernelRead.c
 
 obj-m += sample.o

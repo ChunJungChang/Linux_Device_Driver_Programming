@@ -6,7 +6,6 @@
 #include <linux/cdev.h>
 #include <linux/device.h>
 #include <linux/poll.h>
-#include <linux/device.h>
 #include <asm/uaccess.h>
 #include <asm/errno.h>
 #include <asm-generic/errno-base.h>
@@ -59,7 +58,7 @@ unsigned int devone_poll(struct file *filp, poll_table *wait)
 		return -EBADFD;
 
 	down(&dev->sem);
-	/* go to sleep */
+	/* Go to sleep and function devone_timeout will wake it up */
 	poll_wait(filp, &dev->read_wait, wait);
 	if (dev->timeout_done == 1) {
 		mask |= POLLIN | POLLRDNORM;
@@ -82,12 +81,12 @@ ssize_t devone_read(struct file *filp, char __user *buf, size_t count, loff_t *f
 	unsigned char val;
 	int retval;
 
-	/* critical section, get semaphore */
+	/* Critical section, get semaphore */
 	if (down_interruptible(&dev->sem))
 		return -ERESTARTSYS;
 
 	if (dev->timeout_done == 0) { /* no read */
-		/* critical section, release semaphore */
+		/* Critical section, release semaphore */
 		up(&dev->sem);
 		if (filp->f_flags & O_NONBLOCK) /* Non-blocking mode */
 			return -EAGAIN;
@@ -97,8 +96,9 @@ ssize_t devone_read(struct file *filp, char __user *buf, size_t count, loff_t *f
 					dev->timeout_done == 1, 1*HZ);
 			if (retval == -ERESTARTSYS)
 				return -ERESTARTSYS;
-		} while (retval == 0); /* timeout elapsed */
+		} while (retval == 0); /* Timeout elapsed */
 
+        /* Critical section, get semaphore */
 		if (down_interruptible(&dev->sem))
 			return -ERESTARTSYS;
 	}
@@ -114,9 +114,10 @@ ssize_t devone_read(struct file *filp, char __user *buf, size_t count, loff_t *f
 
 out:
 	dev->timeout_done = 0;
-	/* restart timer */
+	/* Restart timer */
 	mod_timer(&dev->timeout, jiffies + timeout_value*HZ);
 
+    /* Critical section, release semaphore */
 	up(&dev->sem);
 
 	return (retval);
@@ -143,7 +144,7 @@ int devone_open(struct inode *inode, struct file *filp)
 		return -ENOMEM;
 	}
 
-	/* initialize members */
+	/* Initialize members */
 	spin_lock_init(&dev->lock);
 
 	init_waitqueue_head(&dev->read_wait);
@@ -156,7 +157,7 @@ int devone_open(struct inode *inode, struct file *filp)
 
 	filp->private_data = dev;
 
-	/* start timer */
+	/* Start timer */
 	dev->timeout_done = 0;
 	/* Modify expire of timer for many applications */
 	mod_timer(&dev->timeout, jiffies + timeout_value*HZ);
@@ -179,7 +180,7 @@ static int devone_init(void)
 	int alloc_ret = 0;
 	int major;
 	int cdev_err = 0;
-	struct class_device *class_dev = NULL;
+	struct device *class_dev = NULL;
 
 	alloc_ret = alloc_chrdev_region(&dev, 0, devone_devs, "devone");
 	if (alloc_ret)
@@ -194,7 +195,7 @@ static int devone_init(void)
 	if (cdev_err)
 		goto error;
 
-	/* register class */
+	/* Register class */
 	devone_class = class_create(THIS_MODULE, "devone");
 	if (IS_ERR(devone_class))
 		goto error;
@@ -206,7 +207,7 @@ static int devone_init(void)
 	return 0;
 
 error:
-	if (cdev_err = 0)
+	if (cdev_err == 0)
 		cdev_del(&devone_cdev);
 	if (alloc_ret == 0)
 		unregister_chrdev_region(dev, devone_devs);
@@ -218,7 +219,7 @@ static void devone_exit(void)
 {
 	dev_t dev = MKDEV(devone_major, 0);
 
-	/* unregister class */
+	/* Unregister class */
 	device_destroy(devone_class, devone_dev);
 	class_destroy(devone_class);
 

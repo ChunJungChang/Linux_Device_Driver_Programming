@@ -6,7 +6,6 @@
 #include <linux/cdev.h>
 #include <linux/device.h>
 #include <linux/poll.h>
-#include <linux/device.h>
 #include <asm/uaccess.h>
 #include <linux/slab.h>
 #include "devone_ioctl.h"
@@ -25,10 +24,10 @@ struct devone_data {
 	unsigned char val;
 };
 
-ssize_t devone_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+long devone_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
 	struct devone_data *dev = filp->private_data;
-	int retval = 0;
+	long retval = 0;
 	unsigned char val;
 	struct ioctl_cmd data;
 
@@ -148,7 +147,7 @@ static int devone_init(void)
 	int alloc_ret = 0;
 	int major;
 	int cdev_err = 0;
-	struct class_device *class_dev = NULL;
+	struct device *class_dev = NULL;
 
 	alloc_ret = alloc_chrdev_region(&dev, 0, devone_devs, "devone");
 	if (alloc_ret)

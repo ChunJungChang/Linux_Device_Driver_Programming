@@ -44,15 +44,15 @@ int main(void)
 #endif /* __LP64__ */
 
 	printf("sizeof(struct ioctl_cmd) %d\n"
-		"    cmd = %d\n"
-		"    size = %d\n"
-		"    buf = %d\n"
-		"    flag = %d\n",
-		sizeof(struct ioctl_cmd),
-		offsetof(struct ioctl_cmd, cmd),
-		offsetof(struct ioctl_cmd, size),
-		offsetof(struct ioctl_cmd, buf),
-		offsetof(struct ioctl_cmd, flag));
+            "    cmd = %d\n"
+		    "    size = %d\n"
+		    "    buf = %d\n"
+		    "    flag = %d\n",
+		    sizeof(struct ioctl_cmd),
+		    offsetof(struct ioctl_cmd, cmd),
+		    offsetof(struct ioctl_cmd, size),
+		    offsetof(struct ioctl_cmd, buf),
+		    offsetof(struct ioctl_cmd, flag));
 
 	return 0;
 }

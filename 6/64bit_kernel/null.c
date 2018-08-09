@@ -31,7 +31,7 @@ int main(void)
 	/*
      * use for 64bit_kernel or crash because 0 is 32bits but NULL is 64bits
      */
-	/*sub("hello", "world", "hohoho", NULL); */
+	//sub("hello", "world", "hohoho", NULL);
 
 	return 0;
 }

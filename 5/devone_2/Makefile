@@ -1,4 +1,4 @@
-CFAGS += -Wall
+EXTRA_CFLAGS += -Wall
 CFILES = devone.c
 
 obj-m += sample.o

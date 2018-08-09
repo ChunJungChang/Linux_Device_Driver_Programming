@@ -10,7 +10,6 @@ extern wait_queue_head_t yutaka_sample_wait;
 static int sample_init(void)
 {
     wait_queue_head_t *wq = &yutaka_sample_wait;
-    
 
     printk("driver loaded\n");
 

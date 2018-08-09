@@ -29,7 +29,7 @@ static ssize_t sample_proc_read(
     }
 
     finished = 1;
-    /* len = sprintf(buf, "I wanna see the movie\n"); */
+    //len = sprintf(buf, "I wanna see the movie\n");
     len = sprintf(buf, "%d\n", sample_flag);
  
     return len;

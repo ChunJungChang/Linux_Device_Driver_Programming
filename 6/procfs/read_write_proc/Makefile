@@ -1,4 +1,4 @@
-CFAGS += -Wall
+EXTRA_CFLAGS += -Wall
 CFILES = main.c
 
 obj-m += sample.o

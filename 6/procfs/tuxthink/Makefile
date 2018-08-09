@@ -1,6 +1,6 @@
 #http://tuxthink.blogspot.tw/2013/10/creation-of-proc-entrt-using.html
 
-CFAGS += -Wall
+EXTRA_CFLAGS += -Wall
 CFILES = proc_read_data.c
 
 obj-m += sample.o
