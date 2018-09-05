@@ -27,11 +27,11 @@ cat /proc/devices | grep devone<br>
 /bin/mknod /dev/devone c 246 0<br>
 ls -l /dev/devone<br>
 crw-r--r-- 1 root root 246, 0 Dec  4 19:09 /dev/devone<br>
-/bin/mknod --mode=666 /dev/devone c `grep devone /proc/devices  | awk '{print $1;}'` 0<br>
+/bin/mknod --mode=666 /dev/devone c `grep devone /proc/devices | awk '{print $1;}'` 0<br>
 ls -l /dev/devone<br>
 crw-rw-rw- 1 root root 246, 0 Dec  4 19:12 /dev/devone<br>
 rm /dev/devone<br>
 /sbin/rmmod sample.ko<br>
 
-Terminal Tool
+Terminal Tool<br>
 tmux
