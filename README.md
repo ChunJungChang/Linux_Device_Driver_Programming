@@ -54,19 +54,29 @@ tmux
 
 ## VirtualBox VM Network Setting
 
-虛擬網路要有DHCP分配的機制，例如：接到分享器或無線網路等等  
+Host
+```
+C:\Users\BOSS>ipconfig  
+Windows IP 設定  
+無線區域網路介面卡 無線網路連線:  
+連線特定 DNS 尾碼 . . . . . . . . :  
+連結-本機 IPv6 位址 . . . . . . . : fe80::6055:a2ae:1d6b:936d%13  
+IPv4 位址 . . . . . . . . . . . . : 192.168.0.104  
+子網路遮罩 . . . . . . . . . . . .: 255.255.255.0  
+預設閘道 . . . . . . . . . . . . .: 192.168.0.1  
+```
    
 VM
 ```
-機器->設定值->網路>附加到(A): 橋接介面卡  
-機器->設定值->網路>名稱(N): 選Host的有線/無線網卡
-```
-```
 vim /etc/network/interfaces  
+iface enp0s3 inet static  
+address 192.168.0.200  
+netmask 255.255.255.0  
+```
 
-iface enp0s3 inet dhcp  
+Commands
 ```
-```
+機器->設定值->網路>附加到(A): 橋接介面卡  
 ifdown enp0s3  
 ifup enp0s3  
 service networking restart  
