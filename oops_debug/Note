@@ -1,0 +1,35 @@
+su -
+insmod oops.ko
+
+gdb oops.ko
+
+(cat /sys/module/oops/sections/.init.text)
+(gdb) add-symbol-file oops.o 0x0000000000000000
+(gdb) disassemble my_oops_init
+Dump of assembler code for function my_oops_init:
+   0x0000000000000024 <+0>:     push   %rbp
+   0x0000000000000025 <+1>:     mov    $0x0,%rdi
+   0x000000000000002c <+8>:     mov    %rsp,%rbp
+   0x000000000000002f <+11>:    callq  0x34 <my_oops_init+16>
+   0x0000000000000034 <+16>:    mov    $0xa,%edi
+   0x0000000000000039 <+21>:    callq  0x3e <my_oops_init+26>
+   0x000000000000003e <+26>:    movl   $0x0,0x0
+   0x0000000000000049 <+37>:    xor    %eax,%eax
+   0x000000000000004b <+39>:    pop    %rbp
+   0x000000000000004c <+40>:    retq
+End of assembler dump.
+
+[  500.340680] RIP: 0010:[<ffffffffc009b01a>]  [<ffffffffc009b01a>] my_oops_init+0x1a/0x1000 [oops]
+0x0000000000000024 + 0x1a = 0x000000000000003e
+(gdb) list *0x000000000000003e
+0x3e is in my_oops_init (/home/william/tmp/oops.c:7).
+2       #include <linux/module.h>
+3       #include <linux/init.h>
+4       #include <linux/delay.h>
+5
+6       static void create_oops(void) {
+7           *(int *)0 = 0;
+8       }
+9
+10      static int __init my_oops_init(void) {
+11          printk("oops from the module\n");
