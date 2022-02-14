@@ -40,7 +40,7 @@ cat /proc/devices | grep devone
 /bin/mknod /dev/devone c 246 0  
 ls -l /dev/devone  
 crw-r--r-- 1 root root 246, 0 Dec  4 19:09 /dev/devone  
-/bin/mknod --mode=666 /dev/devone c `grep devone /proc/devices | awk '{print $1;}'` 0  
+/bin/mknod --mode=666 /dev/devone c \`grep devone /proc/devices | awk '{print $1;}'\` 0  
 ls -l /dev/devone  
 crw-rw-rw- 1 root root 246, 0 Dec  4 19:12 /dev/devone  
 rm /dev/devone  
