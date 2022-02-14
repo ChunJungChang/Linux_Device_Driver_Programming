@@ -42,7 +42,7 @@ void read_file(int fd)
 	if (ret > 0) {
 		p = buf;
 		while (ret--) {
-			printf("%02x", *p++);
+			printf("%02x ", *p++);
 		}
 	} else {
 		perror("read");

@@ -31,7 +31,7 @@ ssize_t devone_write(struct file *filp, const char __user *buf,
 	unsigned char val;
 	int retval = 0;
 
-	printk("%s: count %d pos %lld\n", __func__, count, *f_ops);
+	printk("%s: count %zu pos %lld\n", __func__, count, *f_ops);
 
 	if (count >= 1) {
 		if (copy_from_user(&val, &buf[0], 1)) {
@@ -59,10 +59,10 @@ ssize_t devone_read(struct file *filp, char __user *buf,
 	int retval;
 
 	read_lock(&p->lock);
-	p->val = val;
+	val = p->val;
 	read_unlock(&p->lock);
 
-	printk("%s: count %d pos %lld\n", __func__, count, *f_ops);
+	printk("%s: count %zu pos %lld\n", __func__, count, *f_ops);
 
 	for (i = 0 ; i < count ; i++) {
 		if (copy_to_user(&buf[i], &val, 1)) {
