@@ -39,6 +39,7 @@ static void devone_timeout(unsigned long arg)
 
 	printk("%s called\n", __func__);
 
+	/* Interrupt context only can use busy waiting */
 	spin_lock_irqsave(&dev->lock, flags);
 
 	dev->timeout_done = 1;
@@ -56,13 +57,21 @@ unsigned int devone_poll(struct file *filp, poll_table *wait)
 
 	if (dev == NULL)
 		return -EBADFD;
-
+	/**
+	 * Critical section, get semaphore
+	 * Only one user context can get semaphore, other user contexts sleep here */
+	 */
 	down(&dev->sem);
-	/* Go to sleep and function devone_timeout will wake it up */
+	/**
+	 * poll_wait() sets a state of the current process into non-runnable and
+	 * adds the current process into the wait queue.
+	 * Function devone_timeout will wake it up.
+	 */
 	poll_wait(filp, &dev->read_wait, wait);
 	if (dev->timeout_done == 1) {
 		mask |= POLLIN | POLLRDNORM;
 	}
+	/* Critical section, release semaphore */
 	up(&dev->sem);
 
 	printk("%s returned (mask 0x%x)\n", __func__, mask);
@@ -81,12 +90,12 @@ ssize_t devone_read(struct file *filp, char __user *buf, size_t count, loff_t *f
 	unsigned char val;
 	int retval;
 
-	/* Critical section, get semaphore */
+	/* Critical section 1, get semaphore */
 	if (down_interruptible(&dev->sem))
 		return -ERESTARTSYS;
 
 	if (dev->timeout_done == 0) { /* no read */
-		/* Critical section, release semaphore */
+		/* Critical section 1, release semaphore */
 		up(&dev->sem);
 		if (filp->f_flags & O_NONBLOCK) /* Non-blocking mode */
 			return -EAGAIN;
@@ -98,7 +107,7 @@ ssize_t devone_read(struct file *filp, char __user *buf, size_t count, loff_t *f
 				return -ERESTARTSYS;
 		} while (retval == 0); /* Timeout elapsed */
 
-        /* Critical section, get semaphore */
+		/* Critical section 2, get semaphore */
 		if (down_interruptible(&dev->sem))
 			return -ERESTARTSYS;
 	}
@@ -117,7 +126,7 @@ out:
 	/* Restart timer */
 	mod_timer(&dev->timeout, jiffies + timeout_value*HZ);
 
-    /* Critical section, release semaphore */
+	/* Critical section 2, release semaphore */
 	up(&dev->sem);
 
 	return (retval);
