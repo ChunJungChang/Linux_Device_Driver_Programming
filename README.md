@@ -11,14 +11,16 @@ Ubuntu 16.04.1 LTS xenial i686
 ## Authorization to Execute Make Command
 
 Make sure that you have root's authorization before run make command.
-
-su -  
-make  
+```
+su -
+make
+```
 
 
 ## Log
 
 /var/log/kern.log
+dmesg -H -w
 
 
 ## Header
@@ -32,19 +34,29 @@ make
 
 ## Insert and Remove A Module
 
-/sbin/insmod ./sample.ko  
-/sbin/lsmod | grep sample  
-sample                 16384  0  
-cat /proc/devices | grep devone  
-246 devone  
-/bin/mknod /dev/devone c 246 0  
-ls -l /dev/devone  
-crw-r--r-- 1 root root 246, 0 Dec  4 19:09 /dev/devone  
-/bin/mknod --mode=666 /dev/devone c \`grep devone /proc/devices | awk '{print $1;}'\` 0  
-ls -l /dev/devone  
-crw-rw-rw- 1 root root 246, 0 Dec  4 19:12 /dev/devone  
-rm /dev/devone  
-/sbin/rmmod sample.ko  
+/sbin/insmod ./sample.ko
+
+/sbin/lsmod | grep sample
+```
+sample                 16384  0
+```
+cat /proc/devices | grep devone
+```
+246 devone
+```
+/bin/mknod /dev/devone c 246 0
+
+ls -l /dev/devone
+```
+crw-r--r-- 1 root root 246, 0 Dec  4 19:09 /dev/devone
+```
+/bin/mknod --mode=666 /dev/devone c \`grep devone /proc/devices | awk '{print $1;}'\` 0
+
+ls -l /dev/devone
+```
+crw-rw-rw- 1 root root 246, 0 Dec  4 19:12 /dev/devone
+```
+/sbin/rmmod sample.ko
 
 
 ## Terminal Tool
